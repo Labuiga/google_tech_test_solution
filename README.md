@@ -6,7 +6,7 @@ This code finds the combinations between pairs of integers from two groups (a, b
     n = 8
     result = [(2,6), (3, 5)]
 
-moreover, we can choose don't take the combinations within the same group, then:
+moreover, we can choose don't take the combinations within the same group (using ac=False), then:
  
 
     result = [(2,6)]

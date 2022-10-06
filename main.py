@@ -3,6 +3,11 @@
 from json import loads
 from argparse import ArgumentParser
 
+A = [1, 3, 5, 6, 9]  # array1
+B = [0, 1, 2, 4, 8]  # array2
+N = 8  # target sum
+AC = 1  # allow combinations of the same array
+
 
 def solve(a, b, n, ac):
     """Strategy:
@@ -12,7 +17,7 @@ def solve(a, b, n, ac):
     a = set(a)
     b = set(b)
     u = [e for e in a.union(b) if e <= n]
-    g = [e for e in u if n - max(u) < e]
+    g = [e for e in u if n - max(u) <= e]
     # combinatorics
     x1, y1 = -1, -1
     r = []
@@ -28,22 +33,30 @@ def solve(a, b, n, ac):
             r.append((x, y))
             x1, y1 = -1, -1
 
-    return r
+    print(r)
 
 
-def main(config):
-    if config:
-        a, b, n, ac = loads(open('config.json', 'r').read()).values()
+def main(file, a, b, n, ac):
+    if file:
+        groups = loads(open('file.json', 'r').read())['groups']
+        for g in groups:
+            a, b, n, ac = g.values()
+            solve(a, b, n, ac)
     else:
-        a = [1, 3, 5, 6, 9]
-        b = [0, 1, 2, 4, 8]
-        n = 8
-        ac = 1  # allow combinations of the same group
-    solve(a, b, n, ac)
+        if not a and b and n:
+            a = A
+            b = B
+            n = N
+            ac = AC
+        solve(a, b, n, ac)
 
 
 if __name__ == '__main__':
     ap = ArgumentParser()
-    ap.add_argument('-c', '--config', help='allow config json', type=bool, default=False)
+    ap.add_argument('-f', '--file', help='allow file json', type=bool, default=False)
+    ap.add_argument('-a', '--array1', help='array1', type=list, default=A)
+    ap.add_argument('-b', '--array2', help='array2', type=list, default=B)
+    ap.add_argument('-n', '--number', help='target sum', type=bool, default=N)
+    ap.add_argument('-ac', '--allow_combinations', help='allow combinations of the same array', type=bool, default=AC)
     args = vars(ap.parse_args())
-    main(config=args['config'])
+    main(file=args['file'], a=args['array1'], b=args['array2'], n=args['number'], ac=args['allow_combinations'])
