@@ -11,27 +11,40 @@ AC = 1  # allow combinations of the same array
 
 def solve(a, b, n, ac):
     """Strategy:
-        1- union set with the purpose of minimizing the number of groups that will be evaluated
+        1 - union set with the purpose of sort and minimizing the number of groups that will be evaluated
         2 - efficiently combine for the case"""
     # union
     a = set(a)
     b = set(b)
     u = [e for e in a.union(b) if e <= n]
     g = [e for e in u if n - max(u) <= e]
+    # if not ac:  # alternative way to evade so much if else - not inplemented
+    #     a = [e for e in a if n - max(a) <= e <= n]
+    #     b = [e for e in a if n - max(a) <= e <= n]
     # combinatorics
     x1, y1 = -1, -1
     r = []
     while g:
-        x = g.pop(0) if x1 < 0 else x1
-        y = g.pop(len(g) - 1) if y1 < 0 else y1
-        d = x + y
-        if d > n:
-            x1 = x
-        elif d < n:
-            y1 = y
-        else:
-            r.append((x, y))
-            x1, y1 = -1, -1
+        x = g.pop(0) if x1 < 0 and g else x1
+        y = g.pop(len(g) - 1) if y1 < 0 and g else y1 if y1 > 0 else x if x in a and x in b else -1
+        if x >= 0 and y >= 0:
+            d = x + y
+            if d > n:
+                x1 = x
+                y1 = -1
+            elif d < n:
+                x1 = -1
+                y1 = y
+            else:
+                if not ac:
+                    if (x in a and y in b) or (y in a and x in b):
+                        r.append((x, y))
+                        x1, y1 = -1, -1
+                    else:
+                        x1 = x
+                else:
+                    r.append((x, y))
+                    x1, y1 = -1, -1
 
     print(r)
 
